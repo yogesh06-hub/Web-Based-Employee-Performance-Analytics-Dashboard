@@ -1,0 +1,30 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Performly | Analytics Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'dashboard/style.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#"><span class="brand-mark">P</span><span>performly</span></a>
+    <nav><p>MENU</p><a class="active" href="#"><i>⊞</i> Overview</a><a href="#employees"><i>♙</i> Employees</a><a href="#performance"><i>◔</i> Performance</a><a href="#goals"><i>◎</i> Goals</a><a href="#"><i>▣</i> Reports</a></nav>
+    <div class="bottom-nav"><a href="#"><i>⚙</i> Settings</a><a href="#"><i>?</i> Help & Support</a><div class="profile"><span class="avatar small">JD</span><div><b>Jordan Davis</b><small>Administrator</small></div><span>⌄</span></div></div>
+  </aside>
+  <main>
+    <header><div><button class="menu-button" aria-label="Open menu">☰</button><p class="eyebrow">MONDAY, 20 MAY 2024</p><h1>Good morning, Jordan <span>✦</span></h1><p class="subhead">Here’s what’s happening with your team today.</p></div><div class="header-actions"><button class="icon-button">⌕</button><button class="icon-button notification">♧</button><button class="export">⇩ &nbsp; Export report</button></div></header>
+    <section class="stats">
+      <article class="stat-card"><div class="stat-top"><span class="stat-icon lavender">♙</span><span class="change up">↗ 8.2%</span></div><p>Total employees</p><h2>{{ employees|length }}</h2><small>vs. previous quarter</small></article>
+      <article class="stat-card"><div class="stat-top"><span class="stat-icon peach">⌁</span><span class="change up">↗ 4.6%</span></div><p>Average performance</p><h2>{{ avg_score }}<em>/100</em></h2><small>vs. previous quarter</small></article>
+      <article class="stat-card"><div class="stat-top"><span class="stat-icon mint">✓</span><span class="change up">↗ 12.5%</span></div><p>Goals completed</p><h2>{{ goal_rate }}<em>%</em></h2><small>vs. previous quarter</small></article>
+      <article class="stat-card"><div class="stat-top"><span class="stat-icon blue">◉</span><span class="change down">↘ 2.1%</span></div><p>Needs attention</p><h2>04</h2><small>vs. previous quarter</small></article>
+    </section>
+    <section class="grid" id="performance"><article class="panel performance-panel"><div class="panel-heading"><div><h3>Performance overview</h3><p>Team performance over the last 6 months</p></div><select id="period"><option>Last 6 months</option><option>This year</option></select></div><div class="chart-wrap"><canvas id="performanceChart"></canvas></div></article>
+      <article class="panel goal-panel" id="goals"><div class="panel-heading"><div><h3>Goals progress</h3><p>Company-wide completion rate</p></div><button class="dots">•••</button></div><div class="donut-wrap"><canvas id="goalsChart"></canvas><div class="donut-label"><b>{{ goal_rate }}%</b><span>completed</span></div></div><div class="legend"><span><i class="legend-dot done"></i>Completed <b>{{ goal_rate }}%</b></span><span><i class="legend-dot remaining"></i>Remaining <b>{{ remaining_rate }}%</b></span></div></article></section>
+    <section class="panel employee-panel" id="employees"><div class="panel-heading"><div><h3>Team performance</h3><p>See how everyone is performing this quarter</p></div><div class="table-actions"><label class="search"><span>⌕</span><input id="employeeSearch" placeholder="Search employee"></label><button class="filter">☷ Filter</button><a href="#">View all <b>→</b></a></div></div><div class="table-scroll"><table><thead><tr><th>EMPLOYEE</th><th>DEPARTMENT</th><th>PERFORMANCE</th><th>GOALS</th><th>ATTENDANCE</th><th>STATUS</th><th></th></tr></thead><tbody>{% for employee in employees %}<tr data-department="{{ employee.department }}"><td><div class="person"><span class="avatar" style="background:{{ employee.color }}">{{ employee.initials }}</span><div><b>{{ employee.name }}</b><small>{{ employee.role }}</small></div></div></td><td>{{ employee.department }}</td><td><div class="score"><div><span style="width:{{ employee.performance_score }}%"></span></div><b>{{ employee.performance_score }}</b></div></td><td>{{ employee.goals_completed }}/{{ employee.goals_total }}</td><td>{{ employee.attendance }}%</td><td><span class="status {{ employee.status|slugify }}">{{ employee.status }}</span></td><td><button class="row-more">•••</button></td></tr>{% endfor %}</tbody></table></div></section>
+  </main><script>window.dashboardData={scores:{{ chart_scores|safe }},names:{{ chart_names|safe }}}</script><script src="{% static 'dashboard/dashboard.js' %}"></script>
+</body></html>
